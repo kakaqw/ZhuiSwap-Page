@@ -2,6 +2,10 @@ import { ethers } from "ethers";
 import { makeAutoObservable } from "mobx";
 import { tokenBalance } from "./interface";
 
+//0x272586F219e45bb66aEb64565d603E0Ec76D336d  工厂合约
+//0xF47707383eB1e07F66c77C0cC1084cd41929f92A   math libaray
+//0x8203B3A0982067d8224F00B44774d6cFbEF9c145   路由合约
+
 // 定义一个 Store
 export class Store {
   walletAddress: string | null = null; //钱包地址
@@ -54,7 +58,7 @@ export class Store {
       this.tokenBalance.push(newToken);
     }
 
-    console.log(this.tokenBalance);
+    // console.log(this.tokenBalance);
   }
 
   //获取WLAddress

@@ -11,17 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { store } from "../Store";
 
-const tokens = [
-  { symbol: "ETH", name: "Ethereum", balance: 1.5 },
-  { symbol: "USDC", name: "USD Coin", balance: 1000 },
-  { symbol: "DAI", name: "Dai", balance: 1000 },
-  { symbol: "WBTC", name: "Wrapped Bitcoin", balance: 0.05 },
-];
+const tokens = store.getTokenBalance();
 
-export function AddLiquidityCard({ onBack }: { onBack: () => void }) {
-  const [token1, setToken1] = useState(tokens[0]);
-  const [token2, setToken2] = useState(tokens[1]);
+export const AddLiquidityCard = ({ onBack }: { onBack: () => void }) => {
+  const [token1, setToken1] = useState(store.tokenBalance?.[0]);
+  const [token2, setToken2] = useState(store.tokenBalance?.[1]);
 
   return (
     <Card className="w-full max-w-md">
@@ -37,22 +33,26 @@ export function AddLiquidityCard({ onBack }: { onBack: () => void }) {
           <div className="flex justify-between items-center">
             <Label htmlFor="token1-amount">Token 1</Label>
             <span className="text-sm text-gray-500">
-              Balance: {token1.balance.toFixed(4)} {token1.symbol}
+              Balance:{" "}
+              {token1?.balance ? Number(token1.balance) / 1e18 : "0.00"}{" "}
+              {token1?.symbol || ""}
             </span>
           </div>
           <div className="flex space-x-2">
             <Input id="token1-amount" placeholder="0.0" className="flex-grow" />
             <Select
-              value={token1.symbol}
+              value={token1?.symbol}
               onValueChange={(value) =>
-                setToken1(tokens.find((t) => t.symbol === value) || tokens[0])
+                setToken1(
+                  tokens?.find((t) => t.symbol === value) || tokens?.[0]
+                )
               }
             >
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select token" />
               </SelectTrigger>
               <SelectContent>
-                {tokens.map((token) => (
+                {tokens?.map((token) => (
                   <SelectItem key={token.symbol} value={token.symbol}>
                     {token.symbol}
                   </SelectItem>
@@ -65,22 +65,26 @@ export function AddLiquidityCard({ onBack }: { onBack: () => void }) {
           <div className="flex justify-between items-center">
             <Label htmlFor="token2-amount">Token 2</Label>
             <span className="text-sm text-gray-500">
-              Balance: {token2.balance.toFixed(4)} {token2.symbol}
+              Balance:{" "}
+              {token2?.balance ? Number(token2.balance) / 1e18 : "0.00"}{" "}
+              {token2?.symbol || ""}
             </span>
           </div>
           <div className="flex space-x-2">
             <Input id="token2-amount" placeholder="0.0" className="flex-grow" />
             <Select
-              value={token2.symbol}
+              value={token2?.symbol}
               onValueChange={(value) =>
-                setToken2(tokens.find((t) => t.symbol === value) || tokens[1])
+                setToken2(
+                  tokens?.find((t) => t.symbol === value) || tokens?.[1]
+                )
               }
             >
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select token" />
               </SelectTrigger>
               <SelectContent>
-                {tokens.map((token) => (
+                {tokens?.map((token) => (
                   <SelectItem key={token.symbol} value={token.symbol}>
                     {token.symbol}
                   </SelectItem>
@@ -93,4 +97,4 @@ export function AddLiquidityCard({ onBack }: { onBack: () => void }) {
       </CardContent>
     </Card>
   );
-}
+};

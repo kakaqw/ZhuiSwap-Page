@@ -34,6 +34,7 @@ export function Header() {
     }
   };
 
+  //获取WL token的余额
   const getTokenBalanceForWallet = async () => {
     const WLAddress = store.getWLAddress(); // 获取WL地址
 
