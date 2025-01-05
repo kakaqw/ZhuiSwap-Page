@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,12 +12,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { store } from "../Store";
-
-const tokens = store.getTokenBalance();
+import { tokenBalance } from "../interface";
 
 export const AddLiquidityCard = ({ onBack }: { onBack: () => void }) => {
-  const [token1, setToken1] = useState(store.tokenBalance?.[0]);
-  const [token2, setToken2] = useState(store.tokenBalance?.[1]);
+  const [tokens, setTokens] = useState<tokenBalance[]>([]);
+  const [token1, setToken1] = useState<tokenBalance | undefined>();
+  const [token2, setToken2] = useState<tokenBalance | undefined>();
+
+  useEffect(() => {
+    // 获取最新的token余额
+    const fetchedTokens = store.getTokenBalance();
+    if (fetchedTokens && fetchedTokens.length > 0) {
+      setTokens(fetchedTokens);
+      // 初始化token1和token2
+      if (!token1) setToken1(fetchedTokens[0]);
+      if (!token2) setToken2(fetchedTokens[1]);
+    }
+  }, [store.tokenBalance]); // 监听store.tokenBalance的变化
 
   return (
     <Card className="w-full max-w-md">
@@ -35,7 +46,7 @@ export const AddLiquidityCard = ({ onBack }: { onBack: () => void }) => {
             <span className="text-sm text-gray-500">
               Balance:{" "}
               {token1?.balance ? Number(token1.balance) / 1e18 : "0.00"}{" "}
-              {token1?.symbol || ""}
+              {token1?.symbol}
             </span>
           </div>
           <div className="flex space-x-2">
@@ -67,7 +78,7 @@ export const AddLiquidityCard = ({ onBack }: { onBack: () => void }) => {
             <span className="text-sm text-gray-500">
               Balance:{" "}
               {token2?.balance ? Number(token2.balance) / 1e18 : "0.00"}{" "}
-              {token2?.symbol || ""}
+              {token2?.symbol}
             </span>
           </div>
           <div className="flex space-x-2">

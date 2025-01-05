@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, reaction } from "mobx";
 import { tokenBalance } from "./interface";
 
 //0x272586F219e45bb66aEb64565d603E0Ec76D336d  工厂合约
@@ -7,13 +7,21 @@ import { tokenBalance } from "./interface";
 //0x8203B3A0982067d8224F00B44774d6cFbEF9c145   路由合约
 
 // 定义一个 Store
-export class Store {
+class Store {
   walletAddress: string | null = null; //钱包地址
   provider: ethers.BrowserProvider | undefined; //钱包Provider
   tokenBalance: tokenBalance[] | undefined; //token余额
 
   constructor() {
     makeAutoObservable(this); // 自动将属性变为可观察，并生成对应的 action
+
+    // 监听tokenBalance的变化
+    reaction(
+      () => this.tokenBalance,
+      (tokenBalance) => {
+        console.log("Token balance updated:", tokenBalance);
+      }
+    );
   }
 
   abiERC20 = [
